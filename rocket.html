@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+
+</style>
+<script src=""></script>
+<body>
+<!-- Add a svg area, empty -->
+<svg id="dataviz_area" style="width: 100%; height: 100vh;"></svg>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+<script>
+
+  var element = document.getElementById('dataviz_area');
+  var positionInfo = element.getBoundingClientRect();
+  var height = positionInfo.height;
+  var width = positionInfo.width;
+
+  var rocket_size = {
+    "height": height / 2,
+    "width": width / 2.5
+  }
+
+  var alert_size = {
+    "height": height / 2,
+    "width": width / 2
+  }
+
+  var button_size = {
+    "height": height / 2,
+    "width": width / 2
+  }
+
+  const svg = d3.select("#dataviz_area")
+    .append('svg')
+    .attr("width", width)
+    .attr("height", height);
+
+    var center_group = svg.append("g")
+    .attr("transform", `translate(${width/2},${height/2})`);
+
+    var group_rocket = svg.append("g")
+    .attr("transform", `translate(${width/2},${height/2})`);
+
+    var rocket1 = group_rocket
+    .append("g")
+    .on("click", function() {
+      rocket1_image.on("mouseleave", null);
+      startRocket();
+    });
+
+    var rocket1_image = rocket1.append("svg:image")
+    .attr('x', -rocket_size.width/2)
+    .attr('y', -rocket_size.height/2)
+    .attr('width', rocket_size.width)
+    .attr('height', rocket_size.height)
+    .style("cursor", "pointer")
+    .style("opacity", 1)
+    .attr("xlink:href", "rocket.png");
+
+    var rocket_group = svg.append("g")
+    .attr('x', 50)
+    .attr('y', 0);
+
+
+  var start_message = group_rocket.append("foreignObject")
+  .attr('x', -alert_size.width/2)
+  .attr('y', alert_size.height/2)
+  .attr('width', alert_size.width)
+  .attr('height', alert_size.height)
+    .append("xhtml:div")
+      .style('fill', 'darkOrange')
+      .attr("class", d => `buttonic`)
+      .html(d => `
+        <div class="alert alert-success text-center" role="alert">
+          <strong>Vegan durchstarten!</strong>
+          <br>
+          ( Klick auf die Rakete )
+        </div>
+        `);
+
+
+  rotateRight();
+
+  //spin(rocket, 1000, 100);
+
+  function startRocket() {
+    spark();
+
+    start_message.transition()
+      .duration(500)
+      .style("opacity", 0.0);
+
+    rocket1
+    .transition()
+    .ease(d3.easeExpIn)
+    .duration(3000)
+    .attr("transform", `translate(0,-1000)`)
+    .on("end", set_welcome_exclamation);
+  }
+
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+  function spark() {
+
+    sparkling(20, 10, "tuerkis2.png");
+    sparkling(10, 20, "darkblue1.png");
+    sparkling(2, 5, "tuerkis1.png");
+    sparkling(-8, 8,  "darkblue2.png");
+    sparkling(-15, 10, "tuerkis2.png");
+
+  }
+
+  function sparkling(angle, distance, image) {
+
+    var sparkling_group = rocket1.append("g")
+      .style("opacity", 0);
+
+    var sparkling = sparkling_group.append("svg:image")
+    .attr('x', 0)
+    .attr('y', rocket_size.height/2)
+    .attr('width', 25)
+    .attr('height', 50)
+    .attr('transform', `translate(0 0) rotate(${angle} 0 0)`)
+    .attr("xlink:href", image);
+
+
+    setTimeout(appear, getRandomInt(501));
+
+
+    function appear() {
+      sparkling_group
+        .transition()
+        .duration(100)
+        .style("opacity", 1.0)
+        .on("end", move_forward);
+    }
+
+    function move_forward() {
+      sparkling
+          .transition()
+          .duration(300)
+          //.attr('transform', `translate(0 10)`)
+          .attr('transform', `translate(0 ${distance}) rotate(${angle} 0 0)`)
+          .on("end", disappear);
+      }
+
+      function disappear() {
+        sparkling_group
+          .transition()
+          .duration(100)
+          .style("opacity", 0.0)
+          .on("end", move_back);
+      }
+
+      function move_back() {
+        sparkling
+            .transition()
+            .duration(50)
+            //.attr('transform', `translate(0 0)`)
+            .attr('transform', `translate(0 0) rotate(${angle} 0 0)`)
+            .on("end", appear);
+        }
+
+  }
+
+  function set_welcome_exclamation() {
+
+    var welcome_exclamation = svg.append("foreignObject")
+    .attr('width', button_size.width)
+    .attr('height', button_size.height)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * 10)
+    .style("opacity", 0.0);
+
+    welcome_exclamation
+      .append("xhtml:div")
+            .attr("class", d => `buttonic`)
+            .html(d => `
+              <div class="alert alert-success text-center" role="alert">
+                <strong>Wuuhuu!</strong>
+              </div>
+              `);
+
+    welcome_exclamation
+    .transition()
+      .duration(500)
+      .style("opacity", 1.0)
+      .on("end", set_first_round_of_buttons);
+
+  }
+
+  function set_first_round_of_buttons() {
+
+    var welcome_exclamation = svg.append("foreignObject")
+    .attr('width', button_size.width)
+    .attr('height', button_size.height)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * 30)
+    .style("opacity", 0.0);
+
+    welcome_exclamation
+      .append("xhtml:div")
+            .attr("class", d => `buttonic`)
+            .html(d => `
+              <div class="alert alert-primary text-center" role="alert">
+                <strong>Wie können wir dir helfen?</strong>
+              </div>
+              `);
+
+    welcome_exclamation
+    .transition()
+      .duration(1000)
+      .style("opacity", 1.0)
+      .on("end", function(){
+        set_button(45, "Ich möchte vegane Rezepte ausprobieren")
+        set_button(60, "Ich habe Fragen zur veganen Ernährung")
+        set_button(75, "Ich will ein veganes Produkt bewerben")
+        }
+      );
+
+  }
+
+  function set_button(percentage, text) {
+    var button = svg.append("foreignObject")
+    .attr('width', button_size.width)
+    .attr('height', button_size.height)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * percentage)
+    .style("opacity", 0.0);
+
+    button
+      .append("xhtml:div")
+            .attr("class", d => `buttonic`)
+            .html(d => `
+              <div class="alert alert-primary text-center" role="alert">
+                ${text}
+              </div>
+              `);
+
+    button
+    .transition()
+      .duration(1000)
+      .style("opacity", 1.0);
+  }
+
+  function rotateRight() {
+    rocket1
+        .transition()
+        .duration(300)
+        .attr('transform', `translate(0 0) rotate(1 0 0)`)
+        .on("end", rotateLeft);
+    }
+
+  function rotateLeft() {
+    rocket1
+        .transition()
+        .duration(300)
+        .attr('transform', `translate(0 0) rotate(-1 0 0)`)
+        .on("end", rotateRight);
+    }
+
+
+</script>
+
+</body>
+</html>

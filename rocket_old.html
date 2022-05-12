@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+
+</style>
+<script src=""></script>
+<body>
+<!-- Add a svg area, empty -->
+<svg id="dataviz_area" style="width: 100%; height: 100vh;"></svg>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+<script>
+
+  var element = document.getElementById('dataviz_area');
+  var positionInfo = element.getBoundingClientRect();
+  var height = positionInfo.height;
+  var width = positionInfo.width;
+
+  var rocket_size = {
+    "height": height / 2,
+    "width": width / 2.5
+  }
+
+  var alert_size = {
+    "height": height / 2,
+    "width": width / 2
+  }
+
+  var button_size = {
+    "height": height / 2,
+    "width": width / 2
+  }
+
+  const svg = d3.select("#dataviz_area")
+    .append('svg')
+    .attr("width", width)
+    .attr("height", height);
+
+    var center_group = svg.append("g")
+    .attr("transform", `translate(${width/2},${height/2})`);
+
+    var group_rocket = svg.append("g")
+    .attr("transform", `translate(${width/2},${height/2})`);
+
+    var rocket1 = group_rocket
+    .append("g")
+    .on("click", function() {
+      startRocket();
+    });;
+
+    rocket1.append("svg:image")
+    .attr('x', -rocket_size.width/2)
+    .attr('y', -rocket_size.height/2)
+    .attr('width', rocket_size.width)
+    .attr('height', rocket_size.height)
+    .style("cursor", "pointer")
+    .style("opacity", 1)
+    .attr("xlink:href", "rocket.png");
+
+    rocket1.append("svg:image")
+    .attr('x', 0)
+    .attr('y', rocket_size.height/2)
+    .attr('width', 25)
+    .attr('height', 50)
+    .attr("xlink:href", "tuerkis1.png");
+
+    var rocket_group = svg.append("g")
+    .attr('x', 50)
+    .attr('y', 0);
+
+
+  var start_message = center_group.append("foreignObject")
+  .attr('x', 0)
+  .attr('y', 0)
+  .attr('width', alert_size.width)
+  .attr('height', alert_size.height)
+    .append("xhtml:div")
+      .style('fill', 'darkOrange')
+      .attr("class", d => `buttonic`)
+      .html(d => `
+        <div class="alert alert-success text-center" role="alert">
+          <strong>Vegan durchstarten!</strong>
+        </div>
+        `);
+
+
+  var rocket = rocket_group
+  .append("svg:image")
+  .attr('x', 0)
+  .attr('y', 0)
+  .attr('width', rocket_size.width)
+  .attr('height', rocket_size.height)
+  .style("cursor", "pointer")
+  .attr("xlink:href", "rocket.png")
+  .on('mouseover', function(){
+    rocket.transition()
+    .duration(500)
+    .attr('height', rocket_size.height + 20);
+  }
+  )
+  .on('mouseleave', (event) =>
+    rocket.transition()
+    .duration(500)
+    .attr('height', rocket_size.height)
+    .on("end", rotateRight)
+  )
+  .on("click", function() {
+    rocket.on("mouseleave", null);
+    startRocket();
+  });
+
+  rotateRight();
+  //spark();
+  //spin(rocket, 1000, 100);
+
+  function startRocket() {
+    //spark();
+
+    start_message.transition()
+      .duration(500)
+      .style("opacity", 0.0);
+
+    rocket1.transition()
+    .ease(d3.easeExpIn)
+    .duration(2000)
+    .attr("transform", `translate(0,-1000)`)
+    .on("end", set_welcome_exclamation);
+  }
+
+  function spark() {
+
+    rocket.append("svg:image")
+    .attr('x', 10)
+    .attr('y', 10)
+    .attr('width', 25)
+    .attr('height', 50)
+    .attr("xlink:href", "tuerkis1.png");
+
+  }
+
+  function set_welcome_exclamation() {
+
+    var welcome_exclamation = svg.append("foreignObject")
+    .attr('width', button_size.width)
+    .attr('height', button_size.height)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * 10)
+    .style("opacity", 0.0);
+
+    welcome_exclamation
+      .append("xhtml:div")
+            .attr("class", d => `buttonic`)
+            .html(d => `
+              <div class="alert alert-success text-center" role="alert">
+                <strong>Wuuhuu!</strong>
+              </div>
+              `);
+
+    welcome_exclamation
+    .transition()
+      .duration(500)
+      .style("opacity", 1.0)
+      .on("end", set_first_round_of_buttons);
+
+  }
+
+  function set_first_round_of_buttons() {
+
+    var welcome_exclamation = svg.append("foreignObject")
+    .attr('width', button_size.width)
+    .attr('height', button_size.height)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * 30)
+    .style("opacity", 0.0);
+
+    welcome_exclamation
+      .append("xhtml:div")
+            .attr("class", d => `buttonic`)
+            .html(d => `
+              <div class="alert alert-primary text-center" role="alert">
+                <strong>Wie können wir dir helfen?</strong>
+              </div>
+              `);
+
+    welcome_exclamation
+    .transition()
+      .duration(1000)
+      .style("opacity", 1.0)
+      .on("end", function(){
+        set_button(45, "Ich möchte vegane Rezepte ausprobieren")
+        set_button(60, "Ich habe Fragen zur veganen Ernährung")
+        set_button(75, "Ich will ein veganes Produkt bewerben")
+        }
+      );
+
+  }
+
+  function set_button(percentage, text) {
+    var button = svg.append("foreignObject")
+    .attr('width', button_size.width)
+    .attr('height', button_size.height)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * percentage)
+    .style("opacity", 0.0);
+
+    button
+      .append("xhtml:div")
+            .attr("class", d => `buttonic`)
+            .html(d => `
+              <div class="alert alert-primary text-center" role="alert">
+                ${text}
+              </div>
+              `);
+
+    button
+    .transition()
+      .duration(1000)
+      .style("opacity", 1.0);
+  }
+
+  function rotateRight() {
+    rocket_group
+        .transition()
+        .duration(300)
+        .attr('transform', `translate(0 0) rotate(1 ${width/2} ${height/2})`)
+        .on("end", rotateLeft);
+    }
+
+  function rotateLeft() {
+    rocket_group
+        .transition()
+        .duration(300)
+        .attr('transform', `translate(0 0) rotate(-1 ${width/2} ${height/2})`)
+        .on("end", rotateRight);
+    }
+
+
+</script>
+
+</body>
+</html>
