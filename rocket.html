@@ -181,52 +181,108 @@
     .attr('width', button_size.width)
     .attr('height', button_size.height)
     .attr('x', width/2 - button_size.width/2)
-    .attr('y', height/100 * 10)
+    .attr('y', height/100 * 25)
     .style("opacity", 0.0);
 
     welcome_exclamation
       .append("xhtml:div")
             .attr("class", d => `buttonic`)
             .html(d => `
-              <div class="alert alert-success text-center" role="alert">
-                <strong>Wuuhuu!</strong>
-              </div>
+                <div class="text-center">
+                <h1 class="text-success">Wuuhuu!</h1>
+                </div>
               `);
 
     welcome_exclamation
     .transition()
       .duration(500)
       .style("opacity", 1.0)
-      .on("end", set_first_round_of_buttons);
+      .on("end", remove_welcome_exclamation);
 
+      function remove_welcome_exclamation() {
+        welcome_exclamation
+        .transition()
+          .delay(1000)
+          .duration(500)
+          .style("opacity", 0.0)
+          .on("end", set_first_round_of_buttons);
+      }
   }
 
   function set_first_round_of_buttons() {
 
-    var welcome_exclamation = svg.append("foreignObject")
+    var logo = svg.append("svg:image")
+    .attr('width', button_size.width)
+    .attr('height', 100)
+    .attr('x', width/2 - button_size.width/2)
+    .attr('y', height/100 * 5)
+    .attr("xlink:href", "vegan-logo.png")
+    .style("opacity", 0.0);
+
+    logo
+    .transition()
+      .duration(1000)
+      .style("opacity", 1.0);
+
+    var question = svg.append("foreignObject")
     .attr('width', button_size.width)
     .attr('height', button_size.height)
     .attr('x', width/2 - button_size.width/2)
-    .attr('y', height/100 * 30)
+    .attr('y', height/100 * 25)
     .style("opacity", 0.0);
 
-    welcome_exclamation
+  question
       .append("xhtml:div")
             .attr("class", d => `buttonic`)
             .html(d => `
-              <div class="alert alert-primary text-center" role="alert">
-                <strong>Wie können wir dir helfen?</strong>
+              <div class="text-center">
+                <h1 class="text-success">Wie können wir dir helfen?</h1>
               </div>
               `);
 
-    welcome_exclamation
+
+
+    question
     .transition()
       .duration(1000)
       .style("opacity", 1.0)
       .on("end", function(){
-        set_button(45, "Ich möchte vegane Rezepte ausprobieren")
-        set_button(60, "Ich habe Fragen zur veganen Ernährung")
-        set_button(75, "Ich will ein veganes Produkt bewerben")
+        set_button(35, "Ich möchte vegane Rezepte ausprobieren")
+        set_button(45, "Ich will ein veganes Produkt bewerben")
+
+
+        var marina = svg.append("foreignObject")
+        .attr('width', button_size.width)
+        .attr('height', button_size.height)
+        .attr('x', width/2 - button_size.width/2)
+        .attr('y', height/100 * 55)
+        .style("opacity", 0.0);
+
+        marina
+          .append("xhtml:div")
+                .attr("class", d => `buttonic`)
+                .html(d => `
+                  <div class="card mb-3">
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <img src="marina.webp" class="img-fluid rounded-start" alt="...">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title">Unsere Business-Managerin wartet bereits auf dich!</h5>
+                          <p class="card-text">Am besten heute noch einen Termin abmachen</p>
+                          <a href="#" class="btn btn-success">Calendly</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  `);
+
+                  marina
+                  .transition()
+                    .duration(1000)
+                    .style("opacity", 1.0);
+
         }
       );
 
