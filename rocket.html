@@ -25,6 +25,8 @@
   var height = positionInfo.height;
   var width = positionInfo.width;
 
+  var font_size = 12 + parseInt(width / 100, 10);
+
   var rocket_size = {
     "height": height / 2,
     "width": width / 2.5
@@ -78,10 +80,9 @@
   .attr('width', alert_size.width)
   .attr('height', alert_size.height)
     .append("xhtml:div")
-      .style('fill', 'darkOrange')
       .attr("class", d => `buttonic`)
       .html(d => `
-        <div class="alert alert-success text-center" role="alert">
+        <div style="font-size: ${font_size}px" class="alert alert-success text-center" role="alert">
           <strong>Vegan durchstarten!</strong>
           <br>
           ( Klick auf die Rakete )
@@ -188,7 +189,7 @@
       .append("xhtml:div")
             .attr("class", d => `buttonic`)
             .html(d => `
-                <div class="text-center">
+                <div style="font-size: ${font_size}px" class="text-center">
                 <h1 class="text-success">Wuuhuu!</h1>
                 </div>
               `);
@@ -235,7 +236,7 @@
       .append("xhtml:div")
             .attr("class", d => `buttonic`)
             .html(d => `
-              <div class="text-center">
+              <div style="font-size: ${font_size}px" class="text-center">
                 <h1 class="text-success">Wie können wir dir helfen?</h1>
               </div>
               `);
