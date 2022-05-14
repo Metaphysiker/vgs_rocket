@@ -24,22 +24,25 @@
   var positionInfo = element.getBoundingClientRect();
   var height = positionInfo.height;
   var width = positionInfo.width;
+  console.log("width: " + width);
 
-  var font_size = 12 + parseInt(width / 100, 10);
+
+  var font_size = 16 + parseInt(width / 100, 10);
+  console.log(font_size);
 
   var rocket_size = {
-    "height": height / 2,
-    "width": width / 2.5
+    "height": 200, //height / 2,
+    "width": 100//width / 2.5
   }
 
   var alert_size = {
-    "height": height / 2,
-    "width": width / 2
+    "height": height / 1.1,
+    "width": width / 1.1
   }
 
   var button_size = {
-    "height": height / 2,
-    "width": width / 2
+    "height": 200,//height / 1.1,
+    "width": width / 1.1
   }
 
   const svg = d3.select("#dataviz_area")
@@ -190,7 +193,7 @@
             .attr("class", d => `buttonic`)
             .html(d => `
                 <div style="font-size: ${font_size}px" class="text-center">
-                <h1 class="text-success">Wuuhuu!</h1>
+                <p class="text-success">Wuuhuu!</p>
                 </div>
               `);
 
@@ -237,7 +240,7 @@
             .attr("class", d => `buttonic`)
             .html(d => `
               <div style="font-size: ${font_size}px" class="text-center">
-                <h1 class="text-success">Wie können wir dir helfen?</h1>
+                <p class="text-success">Wie können wir dir helfen?</p>
               </div>
               `);
 
